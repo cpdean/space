@@ -42,8 +42,7 @@ function Body(x,y,radius,vx,vy,color){
 	};	
 }
 
-function be(){
-
+function game_loop(){
 	context.clearRect(0,0,canvas.width,canvas.height);
 	for(i=0;i<stars.length;i++){
 		stars[i].draw();
@@ -59,7 +58,7 @@ function init(){
 	context = canvas.getContext('2d');
 	bro = new Body(10,26,20,2,7,rand_color());
 	stars = generate_star_clusters();
-	setInterval(be,10);
+	setInterval(game_loop,10);
 }
 
 function generate_star_clusters(){

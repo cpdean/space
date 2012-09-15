@@ -17,7 +17,7 @@ function rand_color(){
 	return color;
 }
 
-function Body(x,y,radius,vx,vy,color){
+function Body(x, y, radius, vx, vy, color, mass){
 
 	this.x = x;
 	this.y = y;
@@ -30,6 +30,7 @@ function Body(x,y,radius,vx,vy,color){
                 return this.x - this.r <= 0
                     || this.x + this.r >= canvas.width;
         };
+
         this.rightleft_colliding = function(x){
                 return this.y - this.r <= 0
                     || this.y + this.r >= canvas.height;
@@ -67,8 +68,8 @@ function init(){
 
 	canvas = document.getElementById('SpaceCanvas');
 	context = canvas.getContext('2d');
-	planet =    new Body(10,26, 20, 2, 7, rand_color());
-	bro = new Body(40,26,20,2,7,rand_color());
+        planets.push(new Body(10,26, 20, 2, 7, rand_color(), 10));
+	bro = new Body(40,26,20,2,7,rand_color(), 0);
         stars = generate_star_clusters();
 	setInterval(game_loop,frame_tick);
 }

@@ -104,6 +104,11 @@ function Body(x, y, radius, vx, vy, color, mass){
                 return {from_x : x, from_y : y};
         };
 
+        this.update_position = function(vector){
+                this.x = this.x + vector.x;
+                this.y = this.y + vector.y;
+        }
+
         this.clipping_distance = function(p){
                 var distance = this.distance_to(p);
                 var radii = this.r + p.r;
@@ -136,8 +141,7 @@ function Body(x, y, radius, vx, vy, color, mass){
                                 var correction = this.unit_vector_of(direction_to_correct);
                                 correction = this.scalar_multiply(correction, clipping);
                                 correction = this.scalar_multiply(correction, -1);
-                                this.x = this.x + correction.x;
-                                this.y = this.y + correction.y;
+                                this.update_position(correction);
 
                         }
                 }
@@ -168,8 +172,7 @@ function Body(x, y, radius, vx, vy, color, mass){
                 out = out + "decay: " + this.gravitational_decay(planets[p]);
                 document.getElementById("log").innerHTML = out;
 
-		this.x = this.x + this.speed.x;
-		this.y = this.y + this.speed.y;
+                this.update_position(this.speed);
 	};
 
 	this.draw = function(){

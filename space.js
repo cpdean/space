@@ -45,6 +45,13 @@ function Body(x, y, radius, vx, vy, color, mass){
                         y : y_component};
         };
 
+        this.magnitude_of = function(v){
+                var m = v.x*v.x + v.y*v.y;
+                m = Math.abs(m);
+                m = Math.sqrt(m);
+                return m;
+        };
+
         this.scalar_multiply = function(vector, scalar){
                 var new_v = {}
                 for(var component in vector){
@@ -55,9 +62,7 @@ function Body(x, y, radius, vx, vy, color, mass){
 
         this.unit_vector_of = function(v){
                 //find magnitude of vector
-                var m = v.x*2 + v.y*2;
-                m = Math.abs(m);
-                m = Math.sqrt(m);
+                var m = this.magnitude_of(v);
                 //divide vector by its magnitude
                 m = 1/m;
                 var new_v = this.scalar_multiply(v,m);
@@ -69,7 +74,6 @@ function Body(x, y, radius, vx, vy, color, mass){
                 for(var i in v1){
                         new_v[i] = v1[i] + v2[i];
                 }
-                debugger;
                 return new_v;
         }
 
@@ -85,6 +89,8 @@ function Body(x, y, radius, vx, vy, color, mass){
                 var out = "speed: x "+this.speed.x+" y "+this.speed.y;
                 out = out + "\n<br>";
                 out = out + "pos: " + this.x + " " + this.y;
+                out = out + "\n<br>";
+                out = out + "pull: " + this.magnitude_of(d);
                 document.getElementById("log").innerHTML = out;
 
 		this.x = this.x + this.speed.x;

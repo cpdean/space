@@ -69,9 +69,15 @@ function Body(x, y, radius, vx, vy, color, mass){
                 return new_v;
         }
 
+
+        this.distance_to = function(planet){
+                return this.magnitude_of(
+                        this.directional_vector(planet)
+                );
+        };
+
         this.gravitational_decay = function(planet){
-                var dir = this.directional_vector(planet);
-                var distance = this.magnitude_of(dir);
+                var distance = this.distance_to(planet);
                 return 1/distance;
         };
 

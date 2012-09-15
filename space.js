@@ -3,7 +3,7 @@ var canvas;
 var bro;
 var stars;
 var planets = []
-var frame_tick = 40;
+var frame_tick = 20;
 
 function rand_color(){
 
@@ -115,23 +115,54 @@ function Body(x, y, radius, vx, vy, color, mass){
                 return radii - distance;
         };
 
+        this.orthogonal_vector = function(v){
+                var new_v = {}
+                new_v.x = v.y
+                new_v.y = v.x*-1;
+                return new_v;
+        };
+
+        this.reflecting_matrix = function(reflector){
+                // http://en.wikipedia.org/wiki/Transformation_matrix#Reflection
+                var u = this.magnitude_of(reflector);
+                u = u*u;
+                u = 1/u;
+                var x = reflector.x;
+                var y = reflector.y;
+                var matrix = [[x*x - y*y, 2*x*y], [2*x*y, y*y - x*x]];
+                for (var row in matrix){
+                        for(var col in matrix[row]){
+                                matrix[row][col] = matrix[row][col] * u;
+                        }
+                }
+                return matrix;
+        };
+
+        this.v = function(v1, v2){
+                return {x: v1, y: v2};
+        };
+
+        this.reflect_vector_with = function(vector, reflector){
+                var r_matrix = this.reflecting_matrix(reflector);
+                var x = vector.x;
+                var y = vector.y;
+                var new_v = {};
+                new_v.x = r_matrix[0][0]*x + r_matrix[0][1]*y;
+                new_v.y = r_matrix[1][0]*x + r_matrix[1][1]*y;
+                return new_v;
+        };
+
 	this.move = function(){
                 if(this.topbottom_colliding()) this.speed.x *= -1;
                 if(this.rightleft_colliding()) this.speed.y *= -1;
 
+
                 //collision detection for planets
                 for(var p in planets){
                         if(this.is_planet_colliding(planets[p])){
-                                // eventually this should calculate
-                                // the normal and reflect the speed
-                                // vector off that
-                                var colliding = this.colliding_from(planets[p]);
-                                if(colliding.from_x){
-                                        this.speed.x *= -1;
-                                }
-                                else{
-                                        this.speed.y *= -1;
-                                }
+                                var normal_vector = this.directional_vector(planets[p]);
+                                var reflecting_vector = this.orthogonal_vector(normal_vector);
+                                this.speed = this.reflect_vector_with(this.speed,reflecting_vector);
 
                                 // handle clipping. reposition agent 
                                 // so it's no longer overlapping with
@@ -139,12 +170,12 @@ function Body(x, y, radius, vx, vy, color, mass){
                                 var clipping = this.clipping_distance(planets[p]);
                                 var direction_to_correct = this.directional_vector(planets[p]);
                                 var correction = this.unit_vector_of(direction_to_correct);
-                                correction = this.scalar_multiply(correction, clipping);
-                                correction = this.scalar_multiply(correction, -1);
+                                correction = this.scalar_multiply(correction, -clipping);
                                 this.update_position(correction);
 
                         }
                 }
+
 
                 for(var p in planets){
                         var d = this.directional_vector(planets[p]);
@@ -160,6 +191,8 @@ function Body(x, y, radius, vx, vy, color, mass){
                 out = out + this.speed.x;
                 out = out + "\n<br>";
                 out = out + this.speed.y;
+                out = out + "\n<br>";
+                out = out + this.magnitude_of(this.speed);
                 out = out + "\n<br>";
                 out = out + "pos: ";
                 out = out + "\n<br>";
@@ -206,7 +239,7 @@ function init(){
 	//bro = new Body(90, 66, 20, -1.5, 2, rand_color(), 0);
 
         // demonstrate collision detection, head-on
-	//bro = new Body(250, 66, 20, 0, 0, rand_color(), 0);
+	//bro = new Body(250, 150, 20, 0, 0, rand_color(), 0);
 
         // demonstrate collision detection, head on,
         // slightly to side. demonstrate normal vector

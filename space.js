@@ -87,11 +87,43 @@ function Body(x, y, radius, vx, vy, color, mass){
                         new_v[i] = v1[i] + v2[i];
                 }
                 return new_v;
-        }
+        };
+
+        this.is_planet_colliding = function(p){
+                var distance = this.distance_to(p);
+                var radii = this.r + p.r;
+                return distance < radii;
+        };
+
+        this.colliding_from = function(p){
+                var d_to_p = this.directional_vector(p);
+                d_to_p.x = Math.abs(d_to_p.x);
+                d_to_p.y = Math.abs(d_to_p.y);
+                var x = d_to_p.x > d_to_p.y;
+                var y = !x;
+                return {from_x : x, from_y : y};
+        };
 
 	this.move = function(){
                 if(this.topbottom_colliding()) this.speed.x *= -1;
                 if(this.rightleft_colliding()) this.speed.y *= -1;
+
+                //collision detection for planets
+                for(var p in planets){
+                        if(this.is_planet_colliding(planets[p])){
+                                // eventually this should calculate
+                                // the normal and reflect the speed
+                                // vector off that
+                                var colliding = this.colliding_from(planets[p]);
+                                if(colliding.from_x){
+                                        this.speed.x *= -1;
+                                }
+                                else{
+                                        this.speed.y *= -1;
+                                }
+                        }
+                }
+
                 for(var p in planets){
                         var d = this.directional_vector(planets[p]);
                         d = this.unit_vector_of(d);

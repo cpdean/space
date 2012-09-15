@@ -89,7 +89,7 @@ function Body(x, y, radius, vx, vy, color, mass){
                 for(var p in planets){
                         var d = this.directional_vector(planets[p]);
                         d = this.unit_vector_of(d);
-                        d = this.scalar_multiply(d, 50);
+                        d = this.scalar_multiply(d, 10);
                         var decay = this.gravitational_decay(planets[p]);
                         d = this.scalar_multiply(d, decay);
                         this.speed = this.apply_vector(this.speed,d);
@@ -135,7 +135,7 @@ function init(){
 	canvas = document.getElementById('SpaceCanvas');
 	context = canvas.getContext('2d');
         planets.push(new Body(250, 200, 20, 2, 7, rand_color(), 10));
-	bro = new Body(90, 66, 20, -3, 4, rand_color(), 0);
+	bro = new Body(90, 66, 20, -1.5, 2, rand_color(), 0);
         stars = generate_star_clusters();
 	setInterval(game_loop, frame_tick);
 }

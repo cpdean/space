@@ -36,6 +36,15 @@ function Body(x, y, radius, vx, vy, color, mass){
                     || this.y + this.r >= canvas.height;
         };
 
+        this.directional_vector = function(other_body){
+                // returns a vector that points to the other body
+                var x_component = this.x - other_body.x;
+                var y_component = this.y - other_body.y;
+
+                return {x : x_component,
+                        y : y_component};
+        };
+
 	this.move = function(){
 
                 if(this.topbottom_colliding()) this.speed.x *= -1;

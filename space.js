@@ -64,10 +64,13 @@ function Body(x, y, radius, vx, vy, color, mass){
 }
 
 function game_loop(){
-	context.clearRect(0,0,canvas.width,canvas.height);
-	for(i=0;i<stars.length;i++){
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	for(var i=0;i<stars.length;i++){
 		stars[i].draw();
 	}
+        for(var i in planets){
+                planets[i].draw();
+        }
 	bro.move();
 	bro.draw();
 
@@ -77,10 +80,10 @@ function init(){
 
 	canvas = document.getElementById('SpaceCanvas');
 	context = canvas.getContext('2d');
-        planets.push(new Body(10,26, 20, 2, 7, rand_color(), 10));
-	bro = new Body(40,26,20,2,7,rand_color(), 0);
+        planets.push(new Body(250, 200, 20, 2, 7, rand_color(), 10));
+	bro = new Body(40, 26, 20, 2, 7, rand_color(), 0);
         stars = generate_star_clusters();
-	setInterval(game_loop,frame_tick);
+	setInterval(game_loop, frame_tick);
 }
 
 function generate_star_clusters(){

@@ -2,6 +2,8 @@ var context;
 var canvas;
 var bro;
 var stars;
+var planets = []
+var frame_tick = 100;
 
 function rand_color(){
 
@@ -56,9 +58,10 @@ function init(){
 
 	canvas = document.getElementById('SpaceCanvas');
 	context = canvas.getContext('2d');
+	planet =    new Body(10,26, 20, 2, 7, rand_color());
 	bro = new Body(10,26,20,2,7,rand_color());
-	stars = generate_star_clusters();
-	setInterval(game_loop,10);
+        stars = generate_star_clusters();
+	setInterval(game_loop,frame_tick);
 }
 
 function generate_star_clusters(){

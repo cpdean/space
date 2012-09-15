@@ -27,16 +27,18 @@ function Body(x,y,radius,vx,vy,color){
 	this.color = color;
 
         this.topbottom_colliding = function(x){
-                return this.x <= 0 || this.x >= canvas.width;
+                return this.x - this.r <= 0
+                    || this.x + this.r >= canvas.width;
         };
         this.rightleft_colliding = function(x){
-                return this.y <= 0 || this.y >= canvas.height;
+                return this.y - this.r <= 0
+                    || this.y + this.r >= canvas.height;
         };
 
 	this.move = function(){
 
-                if(topbottom_collising()) this.vx *= -1;
-                if(rightleft_colliding()) this.vy *= -1;
+                if(this.topbottom_colliding()) this.vx *= -1;
+                if(this.rightleft_colliding()) this.vy *= -1;
 
 		this.x = this.x + this.vx;
 		this.y = this.y + this.vy;
@@ -66,7 +68,7 @@ function init(){
 	canvas = document.getElementById('SpaceCanvas');
 	context = canvas.getContext('2d');
 	planet =    new Body(10,26, 20, 2, 7, rand_color());
-	bro = new Body(10,26,20,2,7,rand_color());
+	bro = new Body(40,26,20,2,7,rand_color());
         stars = generate_star_clusters();
 	setInterval(game_loop,frame_tick);
 }

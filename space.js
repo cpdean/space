@@ -26,10 +26,17 @@ function Body(x,y,radius,vx,vy,color){
 	this.vy = vy;
 	this.color = color;
 
+        this.topbottom_colliding = function(x){
+                return this.x <= 0 || this.x >= canvas.width;
+        };
+        this.rightleft_colliding = function(x){
+                return this.y <= 0 || this.y >= canvas.height;
+        };
+
 	this.move = function(){
 
-		if(this.x <= 0 || this.x >= canvas.width) this.vx *= -1;
-		if(this.y <= 0 || this.y >= canvas.height) this.vy *= -1;
+                if(topbottom_collising()) this.vx *= -1;
+                if(rightleft_colliding()) this.vy *= -1;
 
 		this.x = this.x + this.vx;
 		this.y = this.y + this.vy;

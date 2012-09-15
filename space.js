@@ -95,9 +95,17 @@ function Body(x, y, radius, vx, vy, color, mass){
                         this.speed = this.apply_vector(this.speed,d);
                 }
 
-                var out = "speed: x "+this.speed.x+" y "+this.speed.y;
+                var out = "speed";
                 out = out + "\n<br>";
-                out = out + "pos: " + this.x + " " + this.y;
+                out = out + this.speed.x;
+                out = out + "\n<br>";
+                out = out + this.speed.y;
+                out = out + "\n<br>";
+                out = out + "pos: ";
+                out = out + "\n<br>";
+                out = out + this.x;
+                out = out + "\n<br>";
+                out = out + this.y;
                 out = out + "\n<br>";
                 out = out + "pull: " + this.magnitude_of(d);
                 out = out + "\n<br>";

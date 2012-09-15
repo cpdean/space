@@ -45,6 +45,34 @@ function Body(x, y, radius, vx, vy, color, mass){
                         y : y_component};
         };
 
+        this.scalar_multiply = function(vector, scalar){
+                var new_v = {}
+                for(var component in vector){
+                        new_v[component] = vector[component] * scalar;
+                }
+                return new_v;
+        }
+
+        this.unit_vector_of = function(v){
+                //find magnitude of vector
+                var m = v.x*2 + v.y*2;
+                m = Math.abs(m);
+                m = Math.sqrt(m);
+                //divide vector by its magnitude
+                m = 1/m;
+                var new_v = this.scalar_multiply(v,m);
+                return new_v;
+        }
+
+        this.apply_vector = function(v1, v2){
+                var new_v = {};
+                for(var i in v1){
+                        new_v[i] = v1[i] + v2[i];
+                }
+                debugger;
+                return new_v;
+        }
+
 	this.move = function(){
                 var out = "speed: x "+this.speed.x+" y "+this.speed.y;
                 out = out + "\n<br>";

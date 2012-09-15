@@ -22,8 +22,8 @@ function Body(x, y, radius, vx, vy, color, mass){
 	this.x = x;
 	this.y = y;
 	this.r = radius;
-	this.vx = vx;
-	this.vy = vy;
+        this.speed = {x : vx,
+                      y : vy};
 	this.color = color;
 
         this.topbottom_colliding = function(x){
@@ -38,11 +38,11 @@ function Body(x, y, radius, vx, vy, color, mass){
 
 	this.move = function(){
 
-                if(this.topbottom_colliding()) this.vx *= -1;
-                if(this.rightleft_colliding()) this.vy *= -1;
+                if(this.topbottom_colliding()) this.speed.x *= -1;
+                if(this.rightleft_colliding()) this.speed.y *= -1;
 
-		this.x = this.x + this.vx;
-		this.y = this.y + this.vy;
+		this.x = this.x + this.speed.x;
+		this.y = this.y + this.speed.y;
 	};
 
 	this.draw = function(){

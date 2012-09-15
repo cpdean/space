@@ -74,11 +74,6 @@ function Body(x, y, radius, vx, vy, color, mass){
         }
 
 	this.move = function(){
-                var out = "speed: x "+this.speed.x+" y "+this.speed.y;
-                out = out + "\n<br>";
-                out = out + "pos: " + this.x + " " + this.y;
-                document.getElementById("log").innerHTML = out;
-
                 if(this.topbottom_colliding()) this.speed.x *= -1;
                 if(this.rightleft_colliding()) this.speed.y *= -1;
                 for(var p in planets){
@@ -87,6 +82,10 @@ function Body(x, y, radius, vx, vy, color, mass){
                         this.speed = this.apply_vector(this.speed,d);
                 }
 
+                var out = "speed: x "+this.speed.x+" y "+this.speed.y;
+                out = out + "\n<br>";
+                out = out + "pos: " + this.x + " " + this.y;
+                document.getElementById("log").innerHTML = out;
 
 		this.x = this.x + this.speed.x;
 		this.y = this.y + this.speed.y;

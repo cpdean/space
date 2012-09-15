@@ -46,6 +46,8 @@ function Body(x, y, radius, vx, vy, color, mass){
         };
 
 	this.move = function(){
+                var out = "speed: x "+this.speed.x+" y "+this.speed.y;
+                document.getElementById("log").innerHTML = out;
 
                 if(this.topbottom_colliding()) this.speed.x *= -1;
                 if(this.rightleft_colliding()) this.speed.y *= -1;

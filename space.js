@@ -81,6 +81,12 @@ function Body(x, y, radius, vx, vy, color, mass){
 
                 if(this.topbottom_colliding()) this.speed.x *= -1;
                 if(this.rightleft_colliding()) this.speed.y *= -1;
+                for(var p in planets){
+                        var d = this.directional_vector(planets[p]);
+                        d = this.unit_vector_of(d);
+                        this.speed = this.apply_vector(this.speed,d);
+                }
+
 
 		this.x = this.x + this.speed.x;
 		this.y = this.y + this.speed.y;

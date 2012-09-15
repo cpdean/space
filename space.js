@@ -3,7 +3,7 @@ var canvas;
 var bro;
 var stars;
 var planets = []
-var frame_tick = 100;
+var frame_tick = 40;
 
 function rand_color(){
 

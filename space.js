@@ -206,12 +206,12 @@ function init(){
 	//bro = new Body(90, 66, 20, -1.5, 2, rand_color(), 0);
 
         // demonstrate collision detection, head-on
-	bro = new Body(250, 66, 20, 0, 0, rand_color(), 0);
+	//bro = new Body(250, 66, 20, 0, 0, rand_color(), 0);
 
         // demonstrate collision detection, head on,
         // slightly to side. demonstrate normal vector
         // for collision calculation.
-	// bro = new Body(260, 66, 20, 0, 2, rand_color(), 0);
+	bro = new Body(260, 160, 20, 0, 2, rand_color(), 0);
 
         stars = generate_star_clusters();
 	setInterval(game_loop, frame_tick);

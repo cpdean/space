@@ -104,6 +104,12 @@ function Body(x, y, radius, vx, vy, color, mass){
                 return {from_x : x, from_y : y};
         };
 
+        this.clipping_distance = function(p){
+                var distance = this.distance_to(p);
+                var radii = this.r + p.r;
+                return radii - distance;
+        };
+
 	this.move = function(){
                 if(this.topbottom_colliding()) this.speed.x *= -1;
                 if(this.rightleft_colliding()) this.speed.y *= -1;
@@ -121,6 +127,18 @@ function Body(x, y, radius, vx, vy, color, mass){
                                 else{
                                         this.speed.y *= -1;
                                 }
+
+                                // handle clipping. reposition agent 
+                                // so it's no longer overlapping with
+                                // this planet
+                                var clipping = this.clipping_distance(planets[p]);
+                                var direction_to_correct = this.directional_vector(planets[p]);
+                                var correction = this.unit_vector_of(direction_to_correct);
+                                correction = this.scalar_multiply(correction, clipping);
+                                correction = this.scalar_multiply(correction, -1);
+                                this.x = this.x + correction.x;
+                                this.y = this.y + correction.y;
+
                         }
                 }
 

@@ -38,8 +38,8 @@ function Body(x, y, radius, vx, vy, color, mass){
 
         this.directional_vector = function(other_body){
                 // returns a vector that points to the other body
-                var x_component = this.x - other_body.x;
-                var y_component = this.y - other_body.y;
+                var x_component = other_body.x - this.x;
+                var y_component = other_body.y - this.y;
 
                 return {x : x_component,
                         y : y_component};

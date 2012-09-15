@@ -138,10 +138,6 @@ function Body(x, y, radius, vx, vy, color, mass){
                 return matrix;
         };
 
-        this.v = function(v1, v2){
-                return {x: v1, y: v2};
-        };
-
         this.reflect_vector_with = function(vector, reflector){
                 var r_matrix = this.reflecting_matrix(reflector);
                 var x = vector.x;
@@ -163,6 +159,7 @@ function Body(x, y, radius, vx, vy, color, mass){
                                 var normal_vector = this.directional_vector(planets[p]);
                                 var reflecting_vector = this.orthogonal_vector(normal_vector);
                                 this.speed = this.reflect_vector_with(this.speed,reflecting_vector);
+                                this.speed = this.scalar_multiply(this.speed, 0.996); // rub rub
 
                                 // handle clipping. reposition agent 
                                 // so it's no longer overlapping with

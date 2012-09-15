@@ -69,6 +69,12 @@ function Body(x, y, radius, vx, vy, color, mass){
                 return new_v;
         }
 
+        this.gravitational_decay = function(planet){
+                var dir = this.directional_vector(planet);
+                var distance = this.magnitude_of(dir);
+                return 1/distance;
+        };
+
         this.apply_vector = function(v1, v2){
                 var new_v = {};
                 for(var i in v1){
@@ -83,6 +89,9 @@ function Body(x, y, radius, vx, vy, color, mass){
                 for(var p in planets){
                         var d = this.directional_vector(planets[p]);
                         d = this.unit_vector_of(d);
+                        d = this.scalar_multiply(d, 50);
+                        var decay = this.gravitational_decay(planets[p]);
+                        d = this.scalar_multiply(d, decay);
                         this.speed = this.apply_vector(this.speed,d);
                 }
 
@@ -91,6 +100,8 @@ function Body(x, y, radius, vx, vy, color, mass){
                 out = out + "pos: " + this.x + " " + this.y;
                 out = out + "\n<br>";
                 out = out + "pull: " + this.magnitude_of(d);
+                out = out + "\n<br>";
+                out = out + "decay: " + this.gravitational_decay(planets[p]);
                 document.getElementById("log").innerHTML = out;
 
 		this.x = this.x + this.speed.x;
@@ -124,7 +135,7 @@ function init(){
 	canvas = document.getElementById('SpaceCanvas');
 	context = canvas.getContext('2d');
         planets.push(new Body(250, 200, 20, 2, 7, rand_color(), 10));
-	bro = new Body(40, 26, 20, 2, 7, rand_color(), 0);
+	bro = new Body(90, 66, 20, -3, 4, rand_color(), 0);
         stars = generate_star_clusters();
 	setInterval(game_loop, frame_tick);
 }

@@ -17,6 +17,22 @@ function rand_color(){
 	return color;
 }
 
+function Trace(x,y,color){
+        this.x = x;
+        this.y = y;
+        this.r = 2;
+        this.color = color || "#ff0000";
+
+	this.draw = function(){
+		context.beginPath();
+		context.fillStyle = this.color;
+		context.arc(this.x,this.y,this.r,0,Math.PI*2,true);
+		context.closePath();
+		context.fill();
+	};	
+
+}
+
 function Body(x, y, radius, vx, vy, color, mass){
 
 	this.x = x;
@@ -25,6 +41,7 @@ function Body(x, y, radius, vx, vy, color, mass){
         this.speed = {x : vx,
                       y : vy};
 	this.color = color;
+        this.traces = [];
 
         this.topbottom_colliding = function(x){
                 return this.x - this.r <= 0
@@ -168,6 +185,8 @@ function Body(x, y, radius, vx, vy, color, mass){
                                 var direction_to_correct = this.directional_vector(planets[p]);
                                 var correction = this.unit_vector_of(direction_to_correct);
                                 correction = this.scalar_multiply(correction, -clipping);
+
+
                                 this.update_position(correction);
 
                         }
@@ -191,6 +210,9 @@ function Body(x, y, radius, vx, vy, color, mass){
                 out = out + "\n<br>";
                 out = out + this.magnitude_of(this.speed);
                 out = out + "\n<br>";
+                out = out + "tracers ";
+                out = out + this.traces.length;
+                out = out + "\n<br>";
                 out = out + "pos: ";
                 out = out + "\n<br>";
                 out = out + this.x;
@@ -202,8 +224,16 @@ function Body(x, y, radius, vx, vy, color, mass){
                 out = out + "decay: " + this.gravitational_decay(planets[p]);
                 document.getElementById("log").innerHTML = out;
 
+                this.update_history();
                 this.update_position(this.speed);
 	};
+
+        this.update_history = function(){
+                if(this.traces.length > 1500){
+                        this.traces = this.traces.slice(1000);
+                }
+                this.traces.push(new Trace(this.x, this.y));
+        };
 
 	this.draw = function(){
 		context.beginPath();
@@ -211,7 +241,11 @@ function Body(x, y, radius, vx, vy, color, mass){
 		context.arc(this.x,this.y,this.r,0,Math.PI*2,true);
 		context.closePath();
 		context.fill();
+                for(var i in this.traces){
+                        this.traces[i].draw();
+                }
 	};	
+
 }
 
 function game_loop(){
@@ -233,7 +267,7 @@ function init(){
 	context = canvas.getContext('2d');
         planets.push(new Body(250, 200, 20, 2, 7, rand_color(), 10));
         // simple float around
-	//bro = new Body(90, 66, 20, -1.5, 2, rand_color(), 0);
+	bro = new Body(90, 66, 20, -1.5, 2, rand_color(), 0);
 
         // demonstrate collision detection, head-on
 	//bro = new Body(250, 150, 20, 0, 0, rand_color(), 0);
@@ -241,7 +275,7 @@ function init(){
         // demonstrate collision detection, head on,
         // slightly to side. demonstrate normal vector
         // for collision calculation.
-	bro = new Body(260, 160, 20, 0, 2, rand_color(), 0);
+	//bro = new Body(260, 160, 20, 0, 2, rand_color(), 0);
 
         stars = generate_star_clusters();
 	setInterval(game_loop, frame_tick);
@@ -264,7 +298,7 @@ function generate_star_clusters(){
 		for(j=0;j<num_stars;j++){
 			var sx = gauss(x_mean,std);
 			var sy = gauss(y_mean,std);
-			stars.push(new Body(sx,sy,2,0,0,"#ffffff"));
+			stars.push(new Body(sx,sy,1,0,0,"#ffffff"));
 		}
 	}
 	return stars;

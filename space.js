@@ -3,7 +3,7 @@ var canvas;
 var bro;
 var stars;
 var planets = []
-var frame_tick = 20;
+var frame_tick = 10;
 
 function rand_color(){
 
@@ -247,10 +247,12 @@ function Body(x, y, radius, vx, vy, color, mass){
                 }
         };
         this.update_history = function(){
-                if(this.traces.length > 1500){
-                        this.traces = this.traces.slice(1000);
+                var max = 1000;
+                var trash = 500;
+                if(this.traces.length > max){
+                        this.traces = this.traces.slice(max-trash);
                 }
-                this.traces.push(new Trace(this.x, this.y, this.heat_of()));
+                //this.traces.push(new Trace(this.x, this.y, this.heat_of()));
         };
 
 	this.draw = function(){
@@ -297,6 +299,41 @@ function init(){
 
         stars = generate_star_clusters();
 	setInterval(game_loop, frame_tick);
+
+        //setup controls
+        document.onkeydown = function(e){
+                var v = function(a,b){ return {x:a,y:b};};
+                var A = 65;
+                var W = 87;
+                var S = 83;
+                var D = 68;
+
+                var power = 0.05;
+
+                var up = v(0,-power);
+                var down = v(0,power);
+                var left = v(-power,0);
+                var right = v(power,0);
+
+                switch(e.keyCode){
+                case A:
+                        bro.speed = bro.apply_vector(bro.speed,left);
+                        break;
+
+                case W:
+                        bro.speed = bro.apply_vector(bro.speed,up);
+                        break;
+
+                case S:
+                        bro.speed = bro.apply_vector(bro.speed,down);
+                        break;
+
+                case D:
+                        bro.speed = bro.apply_vector(bro.speed,right);
+                        break;
+
+                }
+        };
 }
 
 function generate_star_clusters(){

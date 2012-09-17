@@ -228,11 +228,29 @@ function Body(x, y, radius, vx, vy, color, mass){
                 this.update_position(this.speed);
 	};
 
+        this.heat_of = function(){
+
+                // range is #00ff00 to #ffff00 to #ff0000
+
+                //range is defined by two ranges
+                // ff00 = 65280 is 7
+                // ffff = 65535 is 4
+                // 00ff = 255   is 0
+
+                var b = "00";
+                var intensity = this.magnitude_of(this.speed);
+                if(intensity > 4){
+                        return "#ff00" + b;
+                }
+                if(intensity <= 4){
+                        return "#00ff" + b;
+                }
+        };
         this.update_history = function(){
                 if(this.traces.length > 1500){
                         this.traces = this.traces.slice(1000);
                 }
-                this.traces.push(new Trace(this.x, this.y));
+                this.traces.push(new Trace(this.x, this.y, this.heat_of()));
         };
 
 	this.draw = function(){

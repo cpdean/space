@@ -226,7 +226,42 @@ function Body(x, y, radius, vx, vy, color, mass){
 
                 this.update_history();
                 this.update_position(this.speed);
+                this.takeUserInput();
 	};
+
+        this.takeUserInput = function(){
+                var v = function(a,b){ return {x:a,y:b};};
+                var A = 65;
+                var W = 87;
+                var S = 83;
+                var D = 68;
+
+                var power = 0.07;
+
+                var up = v(0,-power);
+                var down = v(0,power);
+                var left = v(-power,0);
+                var right = v(power,0);
+
+                switch(document.lastKeyDown){
+                case A:
+                        this.speed = this.apply_vector(this.speed,left);
+                        break;
+
+                case W:
+                        this.speed = this.apply_vector(this.speed,up);
+                        break;
+
+                case S:
+                        this.speed = this.apply_vector(this.speed,down);
+                        break;
+
+                case D:
+                        this.speed = this.apply_vector(this.speed,right);
+                        break;
+
+                }
+        };
 
         this.heat_of = function(){
 
@@ -301,39 +336,14 @@ function init(){
 	setInterval(game_loop, frame_tick);
 
         //setup controls
+        document.lastKeyDown = null;
         document.onkeydown = function(e){
-                var v = function(a,b){ return {x:a,y:b};};
-                var A = 65;
-                var W = 87;
-                var S = 83;
-                var D = 68;
-
-                var power = 0.05;
-
-                var up = v(0,-power);
-                var down = v(0,power);
-                var left = v(-power,0);
-                var right = v(power,0);
-
-                switch(e.keyCode){
-                case A:
-                        bro.speed = bro.apply_vector(bro.speed,left);
-                        break;
-
-                case W:
-                        bro.speed = bro.apply_vector(bro.speed,up);
-                        break;
-
-                case S:
-                        bro.speed = bro.apply_vector(bro.speed,down);
-                        break;
-
-                case D:
-                        bro.speed = bro.apply_vector(bro.speed,right);
-                        break;
-
-                }
+                document.lastKeyDown = e.keyCode;
         };
+        document.onkeyup = function(e){
+                document.lastKeyDown = null;
+        };
+                
 }
 
 function generate_star_clusters(){

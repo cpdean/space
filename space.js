@@ -283,7 +283,9 @@
     body.draw = function(){
       context.beginPath();
       context.fillStyle = body.color;
-      context.arc(body.x,body.y,body.r,0,Math.PI*2,true);
+      var canvas_x = body.x + game.camera_x;
+      var canvas_y = body.y + game.camera_y;
+      context.arc(canvas_x, canvas_y, body.r, 0, Math.PI*2, true);
       context.closePath();
       context.fill();
       for(var i in body.traces){
@@ -347,6 +349,9 @@
     }
 
 
+    game.camera_x = 0;
+    game.camera_y = 0;
+    game.zoom = 1;
     game.planets = [];
     game.planets.push(new Body(250, 200, 20, 2, 7, game.rand_color(), 10, game));
     // simple float around
@@ -366,10 +371,34 @@
     document.lastKeyDown = null;
     document.onkeydown = function(e){
       document.lastKeyDown = e.keyCode;
+      moveCamera(e);
     };
     document.onkeyup = function(e){
       document.lastKeyDown = null;
     };
+
+    function moveCamera(e){
+      switch(e.keyCode){
+
+        case 38:
+          game.camera_y += 1;
+          break;
+
+        case 37:
+          game.camera_x += 1;
+          break;
+
+        case 40:
+          game.camera_y -= 1;
+          break;
+
+        case 39:
+          game.camera_x -= 1;
+          break;
+
+      }
+    }
+
     game.game_tick = function(){
       context.clearRect(0, 0, canvas.width, canvas.height);
       for(var i=0;i<game.stars.length;i++){

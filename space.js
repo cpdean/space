@@ -27,6 +27,8 @@
 
     body.x = x;
     body.y = y;
+    body.canvas_x = body.x + game.camera_x;
+    body.canvas_y = body.y + game.camera_y;
     body.r = radius;
     body.speed = {x : vx,
       y : vy};
@@ -234,6 +236,7 @@
       var right = v(power,0);
 
       switch(document.lastKeyDown){
+
         case A:
           body.speed = body.apply_vector(body.speed,left);
           break;
@@ -280,12 +283,13 @@
       //body.traces.push(new Trace(body.x, body.y, body.heat_of()));
     };
 
+
     body.draw = function(){
       context.beginPath();
       context.fillStyle = body.color;
-      var canvas_x = body.x + game.camera_x;
-      var canvas_y = body.y + game.camera_y;
-      context.arc(canvas_x, canvas_y, body.r, 0, Math.PI*2, true);
+      body.canvas_x = body.x + game.camera_x;
+      body.canvas_y = body.y + game.camera_y;
+      context.arc(body.canvas_x, body.canvas_y, body.r, 0, Math.PI*2, true);
       context.closePath();
       context.fill();
       for(var i in body.traces){
@@ -399,6 +403,25 @@
       }
     }
 
+    game.camera_update = function(){
+      // get focal point 
+      var middle_point = {x: 0, y: 0};
+      debugger;
+      middle_point.x = canvas.width/2;
+      middle_point.y = canvas.height/2;
+      var directional_vector = {};
+      directional_vector.x = game.bro.canvas_x - middle_point.x
+      directional_vector.y = game.bro.canvas_y - middle_point.y
+
+      var camera_friction = 0.05;
+      directional_vector.x = directional_vector.x * camera_friction;
+      directional_vector.y = directional_vector.y * camera_friction;
+
+      game.camera_x -= directional_vector.x;
+      game.camera_y -= directional_vector.y;
+
+    };
+
     game.game_tick = function(){
       context.clearRect(0, 0, canvas.width, canvas.height);
       for(var i=0;i<game.stars.length;i++){
@@ -409,6 +432,7 @@
       }
       game.bro.move();
       game.bro.draw();
+      game.camera_update();
     }
 
   }

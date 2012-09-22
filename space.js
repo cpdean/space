@@ -2,21 +2,21 @@
 (function(window,document){
 
   var frame_tick = 10;
+  var canvas, context;
 
-  function Trace(x,y,color,context){
+  function Trace(x,y,color){
     var trace = this;
     trace.x = x;
     trace.y = y;
     trace.r = 2;
     trace.color = color || "#ff0000";
-    trace.context = context;
 
     trace.draw = function(){
-      trace.context.beginPath();
-      trace.context.fillStyle = trace.color;
-      trace.context.arc(trace.x,trace.y,trace.r,0,Math.PI*2,true);
-      trace.context.closePath();
-      trace.context.fill();
+      context.beginPath();
+      context.fillStyle = trace.color;
+      context.arc(trace.x,trace.y,trace.r,0,Math.PI*2,true);
+      context.closePath();
+      context.fill();
     };	
 
   }
@@ -32,16 +32,15 @@
       y : vy};
     body.color = color;
     body.traces = [];
-    body.game = game;
 
     body.topbottom_colliding = function(x){
       return body.x - body.r <= 0
-        || body.x + body.r >= body.game.canvas.width;
+        || body.x + body.r >= canvas.width;
     };
 
     body.rightleft_colliding = function(x){
       return body.y - body.r <= 0
-        || body.y + body.r >= body.game.canvas.height;
+        || body.y + body.r >= canvas.height;
     };
 
     body.directional_vector = function(other_body){
@@ -278,15 +277,15 @@
       if(body.traces.length > max){
         body.traces = body.traces.slice(max-trash);
       }
-      //body.traces.push(new Trace(body.x, body.y, body.heat_of(),body.game));
+      //body.traces.push(new Trace(body.x, body.y, body.heat_of()));
     };
 
     body.draw = function(){
-      body.game.context.beginPath();
-      body.game.context.fillStyle = body.color;
-      body.game.context.arc(body.x,body.y,body.r,0,Math.PI*2,true);
-      body.game.context.closePath();
-      body.game.context.fill();
+      context.beginPath();
+      context.fillStyle = body.color;
+      context.arc(body.x,body.y,body.r,0,Math.PI*2,true);
+      context.closePath();
+      context.fill();
       for(var i in body.traces){
         body.traces[i].draw();
       }
@@ -296,8 +295,6 @@
 
   function Game(){
     var game = this;
-    game.canvas = document.getElementById('SpaceCanvas');
-    game.context = game.canvas.getContext('2d');
 
     game.rand_color = function(){
       var color = "#";
@@ -329,8 +326,8 @@
         return Math.floor(X);
       }
       var stars = [];
-      var w = game.canvas.width;
-      var h = game.canvas.height;
+      var w = canvas.width;
+      var h = canvas.height;
 
       var num_clusters = Math.floor(Math.random()*8)+5;
 
@@ -374,7 +371,7 @@
       document.lastKeyDown = null;
     };
     game.game_tick = function(){
-      game.context.clearRect(0, 0, game.canvas.width, game.canvas.height);
+      context.clearRect(0, 0, canvas.width, canvas.height);
       for(var i=0;i<game.stars.length;i++){
         game.stars[i].draw();
       }
@@ -388,11 +385,11 @@
   }
 
   window.init = function(){
+    canvas = document.getElementById('SpaceCanvas');
+    context = canvas.getContext('2d');
     var game = new Game();
     setInterval(game.game_tick, frame_tick);
   }
 
 
 })(window,document)
-
-

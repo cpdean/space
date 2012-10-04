@@ -375,38 +375,15 @@
     document.lastKeyDown = null;
     document.onkeydown = function(e){
       document.lastKeyDown = e.keyCode;
-      moveCamera(e);
     };
+
     document.onkeyup = function(e){
       document.lastKeyDown = null;
     };
 
-    function moveCamera(e){
-      switch(e.keyCode){
-
-        case 38:
-          game.camera_y += 1;
-          break;
-
-        case 37:
-          game.camera_x += 1;
-          break;
-
-        case 40:
-          game.camera_y -= 1;
-          break;
-
-        case 39:
-          game.camera_x -= 1;
-          break;
-
-      }
-    }
-
     game.camera_update = function(){
       // get focal point 
       var middle_point = {x: 0, y: 0};
-      debugger;
       middle_point.x = canvas.width/2;
       middle_point.y = canvas.height/2;
       var directional_vector = {};

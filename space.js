@@ -21,6 +21,18 @@
 
   }
 
+  function Vector(x,y){
+    this.x = x;
+    this.y = y;
+  }
+
+  Vector.prototype.get_magnitude = function(){
+      var m = this.x*this.x + this.y*this.y;
+      m = Math.abs(m);
+      m = Math.sqrt(m);
+      return m;
+  };
+
   function Body(x, y, radius, vx, vy, color, mass, game){
 
     var body = this;
@@ -30,8 +42,7 @@
     body.canvas_x = body.x + game.camera_x;
     body.canvas_y = body.y + game.camera_y;
     body.r = radius;
-    body.speed = {x : vx,
-      y : vy};
+    body.speed = new Vector(vx,vy);
     body.color = color;
     body.traces = [];
 
@@ -50,28 +61,20 @@
       var x_component = other_body.x - body.x;
       var y_component = other_body.y - body.y;
 
-      return {x : x_component,
-        y : y_component};
+      return new Vector(x_component,y_component);
     };
 
-    body.magnitude_of = function(v){
-      var m = v.x*v.x + v.y*v.y;
-      m = Math.abs(m);
-      m = Math.sqrt(m);
-      return m;
-    };
 
     body.scalar_multiply = function(vector, scalar){
-      var new_v = {}
-      for(var component in vector){
-        new_v[component] = vector[component] * scalar;
-      }
+      var new_v = new Vector(0,0);
+      new_v.x = vector.x * scalar;
+      new_v.y = vector.y * scalar;
       return new_v;
     }
 
     body.unit_vector_of = function(v){
       //find magnitude of vector
-      var m = body.magnitude_of(v);
+      var m = v.get_magnitude();
       //divide vector by its magnitude
       m = 1/m;
       var new_v = body.scalar_multiply(v,m);
@@ -80,9 +83,7 @@
 
 
     body.distance_to = function(planet){
-      return body.magnitude_of(
-          body.directional_vector(planet)
-          );
+      return body.directional_vector(planet).get_magnitude();
     };
 
     body.gravitational_decay = function(planet){
@@ -91,10 +92,9 @@
     };
 
     body.apply_vector = function(v1, v2){
-      var new_v = {};
-      for(var i in v1){
-        new_v[i] = v1[i] + v2[i];
-      }
+      var new_v = new Vector(0,0);
+      new_v.x = v1.x + v2.x;
+      new_v.y = v1.y + v2.y;
       return new_v;
     };
 
@@ -125,7 +125,7 @@
     };
 
     body.orthogonal_vector = function(v){
-      var new_v = {}
+      var new_v = new Vector(0,0);
       new_v.x = v.y
         new_v.y = v.x*-1;
       return new_v;
@@ -133,7 +133,7 @@
 
     body.reflecting_matrix = function(reflector){
       // http://en.wikipedia.org/wiki/Transformation_matrix#Reflection
-      var u = body.magnitude_of(reflector);
+      var u = reflector.get_magnitude();
       u = u*u;
       u = 1/u;
       var x = reflector.x;
@@ -151,7 +151,7 @@
       var r_matrix = body.reflecting_matrix(reflector);
       var x = vector.x;
       var y = vector.y;
-      var new_v = {};
+      var new_v = new Vector(0,0);
       new_v.x = r_matrix[0][0]*x + r_matrix[0][1]*y;
       new_v.y = r_matrix[1][0]*x + r_matrix[1][1]*y;
       return new_v;
@@ -200,7 +200,7 @@
       out = out + "\n<br>";
       out = out + body.speed.y;
       out = out + "\n<br>";
-      out = out + body.magnitude_of(body.speed);
+      out = out + body.speed.get_magnitude();
       out = out + "\n<br>";
       out = out + "tracers ";
       out = out + body.traces.length;
@@ -211,7 +211,7 @@
       out = out + "\n<br>";
       out = out + body.y;
       out = out + "\n<br>";
-      out = out + "pull: " + body.magnitude_of(d);
+      out = out + "pull: " + d.get_magnitude();
       out = out + "\n<br>";
       out = out + "decay: " + body.gravitational_decay(game.planets[p]);
       document.getElementById("log").innerHTML = out;
@@ -266,7 +266,7 @@
       // 00ff = 255   is 0
 
       var b = "00";
-      var intensity = body.magnitude_of(body.speed);
+      var intensity = body.speed.get_magnitude();
       if(intensity > 4){
         return "#ff00" + b;
       }

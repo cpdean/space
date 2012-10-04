@@ -33,6 +33,31 @@
       return m;
   };
 
+  Vector.prototype.get_unit_vector = function(){
+    //find magnitude of vector
+    var m = this.get_magnitude();
+    //divide vector by its magnitude
+    m = 1/m;
+    var new_v = this.scalar_multiply(m);
+    return new_v;
+  }
+
+  Vector.prototype.scalar_multiply = function(scalar){
+    var new_v = new Vector(0,0);
+    new_v.x = this.x * scalar;
+    new_v.y = this.y * scalar;
+    return new_v;
+  }
+
+  Vector.prototype.apply_vector = function(v2){
+    var new_v = new Vector(0,0);
+    new_v.x = this.x + v2.x;
+    new_v.y = this.y + v2.y;
+    return new_v;
+  };
+
+
+
   function Body(x, y, radius, vx, vy, color, mass, game){
 
     var body = this;
@@ -64,24 +89,6 @@
       return new Vector(x_component,y_component);
     };
 
-
-    body.scalar_multiply = function(vector, scalar){
-      var new_v = new Vector(0,0);
-      new_v.x = vector.x * scalar;
-      new_v.y = vector.y * scalar;
-      return new_v;
-    }
-
-    body.unit_vector_of = function(v){
-      //find magnitude of vector
-      var m = v.get_magnitude();
-      //divide vector by its magnitude
-      m = 1/m;
-      var new_v = body.scalar_multiply(v,m);
-      return new_v;
-    }
-
-
     body.distance_to = function(planet){
       return body.directional_vector(planet).get_magnitude();
     };
@@ -89,13 +96,6 @@
     body.gravitational_decay = function(planet){
       var distance = body.distance_to(planet);
       return 1/distance;
-    };
-
-    body.apply_vector = function(v1, v2){
-      var new_v = new Vector(0,0);
-      new_v.x = v1.x + v2.x;
-      new_v.y = v1.y + v2.y;
-      return new_v;
     };
 
     body.is_planet_colliding = function(p){
@@ -168,15 +168,15 @@
           var normal_vector = body.directional_vector(game.planets[p]);
           var reflecting_vector = body.orthogonal_vector(normal_vector);
           body.speed = body.reflect_vector_with(body.speed,reflecting_vector);
-          body.speed = body.scalar_multiply(body.speed, 0.996); // rub rub
+          body.speed = body.speed.scalar_multiply( 0.996); // rub rub
 
           // handle clipping. reposition agent 
           // so it's no longer overlapping with
           // this planet
           var clipping = body.clipping_distance(game.planets[p]);
           var direction_to_correct = body.directional_vector(game.planets[p]);
-          var correction = body.unit_vector_of(direction_to_correct);
-          correction = body.scalar_multiply(correction, -clipping);
+          var correction = direction_to_correct.get_unit_vector();
+          correction = correction.scalar_multiply( -clipping);
 
 
           body.update_position(correction);
@@ -187,11 +187,11 @@
 
       for(var p in game.planets){
         var d = body.directional_vector(game.planets[p]);
-        d = body.unit_vector_of(d);
-        d = body.scalar_multiply(d, 10);
+        d = d.get_unit_vector();
+        d = d.scalar_multiply(10);
         var decay = body.gravitational_decay(game.planets[p]);
-        d = body.scalar_multiply(d, decay);
-        body.speed = body.apply_vector(body.speed,d);
+        d = d.scalar_multiply(decay);
+        body.speed = body.speed.apply_vector(d);
       }
 
       var out = "speed";
@@ -238,19 +238,19 @@
       switch(document.lastKeyDown){
 
         case A:
-          body.speed = body.apply_vector(body.speed,left);
+          body.speed = body.speed.apply_vector(left);
           break;
 
         case W:
-          body.speed = body.apply_vector(body.speed,up);
+          body.speed = body.speed.apply_vector(up);
           break;
 
         case S:
-          body.speed = body.apply_vector(body.speed,down);
+          body.speed = body.speed.apply_vector(down);
           break;
 
         case D:
-          body.speed = body.apply_vector(body.speed,right);
+          body.speed = body.speed.apply_vector(right);
           break;
 
       }

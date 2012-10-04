@@ -56,6 +56,32 @@
     return new_v;
   };
 
+  Vector.prototype.reflect_over = function(reflector){
+    var reflecting_matrix = function(r){
+      // http://en.wikipedia.org/wiki/Transformation_matrix#Reflection
+      var u = r.get_magnitude();
+      u = u*u;
+      u = 1/u;
+      var x = r.x;
+      var y = r.y;
+      var matrix = [[x*x - y*y, 2*x*y], [2*x*y, y*y - x*x]];
+      for (var row in matrix){
+        for(var col in matrix[row]){
+          matrix[row][col] = matrix[row][col] * u;
+        }
+      }
+      return matrix;
+    };
+    var r_matrix = reflecting_matrix(reflector);
+    var x = this.x;
+    var y = this.y;
+    var new_v = new Vector(0,0);
+    // matrix multiplication
+    new_v.x = r_matrix[0][0]*x + r_matrix[0][1]*y;
+    new_v.y = r_matrix[1][0]*x + r_matrix[1][1]*y;
+    return new_v;
+  };
+
 
 
   function Body(x, y, radius, vx, vy, color, mass, game){
@@ -131,32 +157,6 @@
       return new_v;
     };
 
-    body.reflecting_matrix = function(reflector){
-      // http://en.wikipedia.org/wiki/Transformation_matrix#Reflection
-      var u = reflector.get_magnitude();
-      u = u*u;
-      u = 1/u;
-      var x = reflector.x;
-      var y = reflector.y;
-      var matrix = [[x*x - y*y, 2*x*y], [2*x*y, y*y - x*x]];
-      for (var row in matrix){
-        for(var col in matrix[row]){
-          matrix[row][col] = matrix[row][col] * u;
-        }
-      }
-      return matrix;
-    };
-
-    body.reflect_vector_with = function(vector, reflector){
-      var r_matrix = body.reflecting_matrix(reflector);
-      var x = vector.x;
-      var y = vector.y;
-      var new_v = new Vector(0,0);
-      new_v.x = r_matrix[0][0]*x + r_matrix[0][1]*y;
-      new_v.y = r_matrix[1][0]*x + r_matrix[1][1]*y;
-      return new_v;
-    };
-
     body.move = function(){
       if(body.topbottom_colliding()) body.speed.x *= -1;
       if(body.rightleft_colliding()) body.speed.y *= -1;
@@ -167,7 +167,7 @@
         if(body.is_planet_colliding(game.planets[p])){
           var normal_vector = body.directional_vector(game.planets[p]);
           var reflecting_vector = body.orthogonal_vector(normal_vector);
-          body.speed = body.reflect_vector_with(body.speed,reflecting_vector);
+          body.speed = body.speed.reflect_over(reflecting_vector);
           body.speed = body.speed.scalar_multiply( 0.996); // rub rub
 
           // handle clipping. reposition agent 

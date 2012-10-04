@@ -191,6 +191,9 @@
       out = out + "\n<br>";
       out = out + body.speed.get_magnitude();
       out = out + "\n<br>";
+      out = out + "zoom";
+      out = out + game.zoom;
+      out = out + "\n<br>";
       out = out + "tracers ";
       out = out + body.traces.length;
       out = out + "\n<br>";
@@ -346,9 +349,9 @@
     game.camera_y = 0;
     game.zoom = 0.5;
     game.planets = [];
-    game.planets.push(new Body(250, 200, 20, 2, 7, game.rand_color(), 10, game));
+    game.planets.push(new Body(250, 200, 25, 2, 7, game.rand_color(), 10, game));
     // simple float around
-    game.bro = new Body(90, 66, 20, -1.5, 2, game.rand_color(), 0, game);
+    game.bro = new Body(90, 66, 10, -1.5, 2, game.rand_color(), 0, game);
 
     // demonstrate collision detection, head-on
     //bro = new Body(250, 150, 20, 0, 0, game.rand_color(), 0,game);
@@ -390,6 +393,17 @@
 
     };
 
+    game.zoom_update = function(vector){
+      var speed = vector.get_magnitude();
+      var goal_zoom = 1/speed;
+      goal_zoom = goal_zoom * 2;
+      goal_zoom = Math.min(goal_zoom,2.5);
+      goal_zoom = Math.max(goal_zoom,0.5);
+      var delta = goal_zoom - game.zoom;
+      delta = delta * 0.001;
+      game.zoom = game.zoom + delta;
+    };
+
     game.game_tick = function(){
       context.clearRect(0, 0, canvas.width, canvas.height);
       for(var i=0;i<game.stars.length;i++){
@@ -401,6 +415,7 @@
       game.bro.move();
       game.bro.draw();
       game.camera_update();
+      game.zoom_update(game.bro.speed);
     }
 
   }

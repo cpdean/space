@@ -130,15 +130,6 @@
       return distance < radii;
     };
 
-    body.colliding_from = function(p){
-      var d_to_p = body.directional_vector(p);
-      d_to_p.x = Math.abs(d_to_p.x);
-      d_to_p.y = Math.abs(d_to_p.y);
-      var x = d_to_p.x > d_to_p.y;
-      var y = !x;
-      return {from_x : x, from_y : y};
-    };
-
     body.update_position = function(vector){
       body.x = body.x + vector.x;
       body.y = body.y + vector.y;

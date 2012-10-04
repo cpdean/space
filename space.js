@@ -10,7 +10,6 @@
     trace.y = y;
     trace.r = 2;
     trace.color = color || "#ff0000";
-
     trace.draw = function(){
       context.beginPath();
       context.fillStyle = trace.color;
@@ -18,7 +17,6 @@
       context.closePath();
       context.fill();
     };	
-
   }
 
   function Vector(x,y){
@@ -280,7 +278,7 @@
       context.fillStyle = body.color;
       body.canvas_x = body.x + game.camera_x;
       body.canvas_y = body.y + game.camera_y;
-      context.arc(body.canvas_x, body.canvas_y, body.r, 0, Math.PI*2, true);
+      context.arc(game.zoom * body.canvas_x, game.zoom * body.canvas_y, game.zoom * body.r, 0, Math.PI*2, true);
       context.closePath();
       context.fill();
       for(var i in body.traces){
@@ -346,7 +344,7 @@
 
     game.camera_x = 0;
     game.camera_y = 0;
-    game.zoom = 1;
+    game.zoom = 0.5;
     game.planets = [];
     game.planets.push(new Body(250, 200, 20, 2, 7, game.rand_color(), 10, game));
     // simple float around
@@ -377,6 +375,8 @@
       var middle_point = {x: 0, y: 0};
       middle_point.x = canvas.width/2;
       middle_point.y = canvas.height/2;
+      middle_point.x = middle_point.x / game.zoom;
+      middle_point.y = middle_point.y / game.zoom;
       var directional_vector = {};
       directional_vector.x = game.bro.canvas_x - middle_point.x
       directional_vector.y = game.bro.canvas_y - middle_point.y
